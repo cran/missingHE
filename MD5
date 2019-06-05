@@ -1,4 +1,4 @@
-8c4dcb238f2b44e7ce420e209785b535 *DESCRIPTION
+09df606f8818eea9c64cf13e41e5be05 *DESCRIPTION
 f4c9f76c16ce708b0b6b9e275abe81a2 *NAMESPACE
 d4411623f0e8b6ef20cf94c79c925eba *R/data.R
 9a232632e28dc60984a07e18140aeac3 *R/data_read_hurdle.R
@@ -20,9 +20,9 @@ cf7ac7b20b966e0414720c333659b29a *R/run_selection.R
 710edc901a4cb05b33c2b6e89195d321 *R/selection.R
 ba07e745835ba8af1ea7d30b95ca7a4a *R/summary.missingHE.R
 d52452ebdd7ac5730e9daf6cd85b34b6 *R/write_hurdle.R
-cb84b7324259410b13f38005fe9ddb39 *R/write_pattern.R
+f2d7ed3b1e10ed46f34ca8cb96580a33 *R/write_pattern.R
 865db782608b74776d3aee37a332a500 *R/write_selection.R
-b746b1348174d2dd2d4b5bd7adce3465 *README.md
+e82517988bfcdff6bd595d4c5b7c5b39 *README.md
 d25e6a4de55ffacb1468d870d05b9a4b *data/MenSS.RData
 4fd615bff37a61308ee6eb4dc40db615 *man/MenSS.Rd
 01bd50812c51df93d3a4755e044f167a *man/data_read_hurdle.Rd
