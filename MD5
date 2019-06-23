@@ -1,4 +1,4 @@
-09df606f8818eea9c64cf13e41e5be05 *DESCRIPTION
+442de4a7b33be6ac54ba6a841b7cc5b2 *DESCRIPTION
 f4c9f76c16ce708b0b6b9e275abe81a2 *NAMESPACE
 d4411623f0e8b6ef20cf94c79c925eba *R/data.R
 9a232632e28dc60984a07e18140aeac3 *R/data_read_hurdle.R
@@ -10,7 +10,7 @@ bb938333c3cca9258356bb0bce385457 *R/jagsresults.R
 00d9d1a3af8253d720bf92829eb82dfd *R/pattern.R
 83a7e8cfdb072a6e36e3cc449494ffc3 *R/pic.R
 1bd26cc86cbe4ecf7a37995988f6385b *R/plot.missingHE.R
-c18680e141fb62cf9fc91487c709f99d *R/print.missingHE.R
+ddcd89c31037054d5fff1d9e22601fc2 *R/print.missingHE.R
 d95a5ef425ff66bc9cd1413715ed18a0 *R/prior_hurdle.R
 1dccf8279600071e4186dc2e950e017f *R/prior_pattern.R
 d497ca6a3032e5fc871983f9f3b55e49 *R/prior_selection.R
@@ -34,7 +34,7 @@ d48278baafa7165ea6318afda9471a8f *man/data_read_pattern.Rd
 0e09e3149dc93b0773b76a9286d4059a *man/pattern.Rd
 6a5b7640077f89d57465eb8f8cf6cfc8 *man/pic.Rd
 ba0661d429a067bc1e2155293509e478 *man/plot.missingHE.Rd
-39ef8d202c997744afd3ac2edfebe33e *man/print.missingHE.Rd
+39238a99e0875337dcf2aef98e0871b3 *man/print.missingHE.Rd
 1fe699b257da5b1a3605eb4e60924728 *man/prior_hurdle.Rd
 d170f7016c9c3398b43c7d96f7e38bfb *man/prior_pattern.Rd
 1b9afea2478b83f4120033f7eef6966f *man/prior_selection.Rd
