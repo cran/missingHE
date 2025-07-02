@@ -1,4 +1,4 @@
-## ---- echo = FALSE, message = FALSE-------------------------------------------
+## ----echo = FALSE, message = FALSE--------------------------------------------
 knitr::opts_chunk$set(prompt = TRUE, highlight = F, background = '#FFFFFF',
                       collapse = T, comment = "#>")
 library(missingHE)
@@ -39,10 +39,10 @@ NN.sel=selection(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
   n.iter = 1000, dist_e = "norm", dist_c = "norm", ppc = TRUE)
 
 ## ----selection1, eval=FALSE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
-#  NN.sel=selection(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
-#    model.me = me ~ age + ethnicity + employment,
-#    model.mc = mc ~ age + ethnicity + employment, type = "MAR",
-#    n.iter = 1000, dist_e = "norm", dist_c = "norm", ppc = TRUE)
+# NN.sel=selection(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
+#   model.me = me ~ age + ethnicity + employment,
+#   model.mc = mc ~ age + ethnicity + employment, type = "MAR",
+#   n.iter = 1000, dist_e = "norm", dist_c = "norm", ppc = TRUE)
 
 ## ----print_selection1, eval=TRUE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
 print(NN.sel, value.mis = FALSE, only.means = TRUE)
@@ -64,9 +64,9 @@ NN.pat=pattern(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
   dist_e = "norm", dist_c = "norm", ppc = TRUE)
 
 ## ----pattern1, eval=FALSE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
-#  NN.pat=pattern(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
-#    type = "MAR", restriction = "CC", n.iter = 1000, Delta_e = 0, Delta_c = 0,
-#    dist_e = "norm", dist_c = "norm", ppc = TRUE)
+# NN.pat=pattern(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
+#   type = "MAR", restriction = "CC", n.iter = 1000, Delta_e = 0, Delta_c = 0,
+#   dist_e = "norm", dist_c = "norm", ppc = TRUE)
 
 ## ----coef_pattern1, eval=TRUE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
 coef(NN.pat, random = FALSE)
@@ -80,9 +80,9 @@ NN.hur=hurdle(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
   n.iter = 1000, dist_e = "norm", dist_c = "norm", ppc = TRUE)
 
 ## ----hurdle1, eval=FALSE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
-#  NN.hur=hurdle(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
-#    model.se = se ~ 1, model.sc = sc ~ age, type = "SAR", se = 1, sc = 0,
-#    n.iter = 1000, dist_e = "norm", dist_c = "norm", ppc = TRUE)
+# NN.hur=hurdle(data = MenSS, model.eff = e ~ u.0, model.cost = c ~ e,
+#   model.se = se ~ 1, model.sc = sc ~ age, type = "SAR", se = 1, sc = 0,
+#   n.iter = 1000, dist_e = "norm", dist_c = "norm", ppc = TRUE)
 
 ## ----coef_hurdle1, eval=TRUE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
 coef(NN.hur, random = FALSE)

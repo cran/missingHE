@@ -1,4 +1,4 @@
-## ---- echo = FALSE, message = FALSE-------------------------------------------
+## ----echo = FALSE, message = FALSE--------------------------------------------
 knitr::opts_chunk$set(prompt = TRUE, highlight = F, background = '#FFFFFF',
                       collapse = T, comment = "#>")
 library(missingHE)
@@ -33,10 +33,10 @@ PG.sel=selection(data = MenSS2, model.eff = e ~ sex_inst.0, model.cost = c ~ 1,
   n.iter = 1000, dist_e = "pois", dist_c = "gamma")
 
 ## ----selection1, eval=FALSE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
-#  PG.sel=selection(data = MenSS2, model.eff = e ~ sex_inst.0, model.cost = c ~ 1,
-#    model.me = me ~ age + ethnicity + employment,
-#    model.mc = mc ~ age + ethnicity + employment, type = "MAR",
-#    n.iter = 1000, dist_e = "pois", dist_c = "gamma")
+# PG.sel=selection(data = MenSS2, model.eff = e ~ sex_inst.0, model.cost = c ~ 1,
+#   model.me = me ~ age + ethnicity + employment,
+#   model.mc = mc ~ age + ethnicity + employment, type = "MAR",
+#   n.iter = 1000, dist_e = "pois", dist_c = "gamma")
 
 ## ----plot_selection1, eval=TRUE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE, fig.width=15,fig.height=9,out.width='65%',fig.align='center'----
 plot(PG.sel, outcome = "effects")
@@ -53,9 +53,9 @@ PG.pat=pattern(data = MenSS2, model.eff = e ~ sex_inst.0 + (1 | site),
                n.iter = 1000, Delta_e = 0, Delta_c = 0, dist_e = "pois", dist_c = "gamma")
 
 ## ----pattern1, eval=FALSE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
-#  PG.pat=pattern(data = MenSS2, model.eff = e ~ sex_inst.0 + (1 | site),
-#                 model.cost = c ~ 1 + (1 | site), type = "MAR", restriction = "AC",
-#                 n.iter = 1000, Delta_e = 0, Delta_c = 0, dist_e = "pois", dist_c = "gamma")
+# PG.pat=pattern(data = MenSS2, model.eff = e ~ sex_inst.0 + (1 | site),
+#                model.cost = c ~ 1 + (1 | site), type = "MAR", restriction = "AC",
+#                n.iter = 1000, Delta_e = 0, Delta_c = 0, dist_e = "pois", dist_c = "gamma")
 
 ## ----coef_pattern1, eval=TRUE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
 coef(PG.pat, random = TRUE)
@@ -83,12 +83,12 @@ PG.hur=hurdle(data = MenSS2, model.eff = e ~ sex_inst.0, model.cost = c ~ 1 + (1
   n.iter = 1000, dist_e = "pois", dist_c = "gamma", prior = my.prior)
 
 ## ----hurdle1, eval=FALSE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
-#  #remove added constant from costs
-#  #MenSS2$c <- MenSS2$c - 0.01
-#  
-#  PG.hur=hurdle(data = MenSS2, model.eff = e ~ sex_inst.0, model.cost = c ~ 1 + (1 | site),
-#    model.se = se ~ 1, model.sc = sc ~ age + (1 | site), type = "SAR", se = NULL, sc = 0,
-#    n.iter = 1000, dist_e = "pois", dist_c = "gamma", prior = my.prior)
+# #remove added constant from costs
+# #MenSS2$c <- MenSS2$c - 0.01
+# 
+# PG.hur=hurdle(data = MenSS2, model.eff = e ~ sex_inst.0, model.cost = c ~ 1 + (1 | site),
+#   model.se = se ~ 1, model.sc = sc ~ age + (1 | site), type = "SAR", se = NULL, sc = 0,
+#   n.iter = 1000, dist_e = "pois", dist_c = "gamma", prior = my.prior)
 
 ## ----coef_hurdle1, eval=TRUE, echo=TRUE, comment=NA,warning=FALSE,error=FALSE,message=FALSE----
 coef(PG.hur, random = FALSE)
