@@ -2,75 +2,25 @@
 % Please edit documentation in R/write_hurdle.R
 \name{write_hurdle}
 \alias{write_hurdle}
-\title{An internal function to select which type of hurdle model to execute for both effectiveness and costs. 
+\title{An internal function to select which type of hurdle model to execute. 
 Alternatives vary depending on the type of distribution assumed for the effect and cost variables,
 type of structural value mechanism assumed and independence or joint modelling
 This function selects which type of model to execute.}
 \usage{
-write_hurdle(
-  dist_e,
-  dist_c,
-  type,
-  pe_fixed,
-  pc_fixed,
-  ze_fixed,
-  zc_fixed,
-  ind_fixed,
-  pe_random,
-  pc_random,
-  ze_random,
-  zc_random,
-  ind_random,
-  model_e_random,
-  model_c_random,
-  model_se_random,
-  model_sc_random,
-  se,
-  sc
-)
+write_hurdle(dist_e, dist_c, type, model_txt_info)
 }
 \arguments{
-\item{dist_e}{Distribution assumed for the effects. Current available chocies are: Normal ('norm'), Beta ('beta'), Gamma ('gamma'), Exponential ('exp'),
-Weibull ('weibull'), Logistic ('logis'), Poisson ('pois'), Negative Binomial ('nbinom') or Bernoulli ('bern')}
+\item{dist_e}{Distribution assumed for the effects. Current available choices are: Normal ('norm'), Beta ('beta'), Gamma ('gamma'), Exponential ('exp'),
+Weibull ('weib'), Logistic ('logis'), Poisson ('pois'), Negative Binomial ('negbin') or Bernoulli ('bern')}
 
-\item{dist_c}{Distribution assumed for the costs. Current available chocies are: Normal ('norm'), Gamma ('gamma') or LogNormal ('lnorm')}
+\item{dist_c}{Distribution assumed for the costs. Current available choices are: Normal ('norm'), Gamma ('gamma') or LogNormal ('lnorm')}
 
-\item{type}{Type of structural value mechanism assumed. Choices are Structural Completely At Random (SCAR) and Structural At Random (SAR)}
+\item{type}{Type of structural value mechanism assumed. Choices are Structural Completely At Random (SCAR) and Structural At Random (SAR).}
 
-\item{pe_fixed}{Number of fixed effects for the effectiveness model}
-
-\item{pc_fixed}{Number of fixed effects for the cost model}
-
-\item{ze_fixed}{Number of fixed effects or the structural indicators model for the effectiveness}
-
-\item{zc_fixed}{Number of fixed effects or the structural indicators model for the costs}
-
-\item{ind_fixed}{Logical; if TRUE independence at the level of the fixed effects between effectiveness and costs is assumed, else correlation is accounted for}
-
-\item{pe_random}{Number of random effects for the effectiveness model}
-
-\item{pc_random}{Number of random effects for the cost model}
-
-\item{ze_random}{Number of random effects or the structural indicators model for the effectiveness}
-
-\item{zc_random}{Number of random effects or the structural indicators model for the costs}
-
-\item{ind_random}{Logical; if TRUE independence at the level of the random effects between effectiveness and costs is assumed, else correlation is accounted for}
-
-\item{model_e_random}{Random effects formula for the effectiveness model}
-
-\item{model_c_random}{Random effects formula for the costs model}
-
-\item{model_se_random}{Random effects formula for the structural indicators model for the effectiveness}
-
-\item{model_sc_random}{Random effects formula for the structural indicators model for the costs}
-
-\item{se}{Structural value for the effectiveness}
-
-\item{sc}{Structural value for the costs}
+\item{model_txt_info}{list containing model specification information used to write the txt file of the JAGS model.}
 }
 \description{
-An internal function to select which type of hurdle model to execute for both effectiveness and costs. 
+An internal function to select which type of hurdle model to execute. 
 Alternatives vary depending on the type of distribution assumed for the effect and cost variables,
 type of structural value mechanism assumed and independence or joint modelling
 This function selects which type of model to execute.

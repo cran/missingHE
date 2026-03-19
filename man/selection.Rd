@@ -15,20 +15,20 @@ selection(
   type,
   prob = c(0.025, 0.975),
   n.chains = 2,
-  n.iter = 20000,
+  n.iter = 10000,
   n.burnin = floor(n.iter/2),
   inits = NULL,
   n.thin = 1,
-  ppc = FALSE,
   save_model = FALSE,
   prior = "default",
+  center = FALSE,
   ...
 )
 }
 \arguments{
 \item{data}{A data frame in which to find the variables supplied in \code{model.eff}, \code{model.cost} (model formulas for effects and costs) 
 and \code{model.me}, \code{model.mc} (model formulas for the missing effect and cost models). Among these,
-effectiveness, cost and treatment indicator (only two arms) variables must always be provided and named 'e', 'c' and 't', respectively.}
+effectiveness, cost and treatment indicator (only two arms) variables must always be provided and named 'e', 'c' and 'trt', respectively.}
 
 \item{model.eff}{A formula expression in conventional \code{R} linear modelling syntax. The response must be a health economic
 effectiveness outcome ('e') whose name must correspond to that used in \code{data}. Any covariates in the model must be provided on the right-hand side of the formula.
@@ -50,14 +50,14 @@ Random effects can also be specified for each model parameter. See details for h
 If there are no covariates, \code{1} should be specified on the right hand side of the formula. By default, covariates are placed on the "probability" parameter for the missing costs through a logistic-linear model.
 Random effects can also be specified for each model parameter. See details for how these can be specified.}
 
-\item{dist_e}{Distribution assumed for the effects. Current available chocies are: Normal ('norm'), Beta ('beta'), Gamma ('gamma'), Exponential ('exp'),
-Weibull ('weibull'), Logistic ('logis'), Poisson ('pois'), Negative Binomial ('nbinom') or Bernoulli ('bern').}
+\item{dist_e}{Distribution assumed for the effects. Current available choices are: Normal ('norm'), Beta ('beta'), Gamma ('gamma'), Exponential ('exp'),
+Weibull ('weib'), Logistic ('logis'), Poisson ('pois'), Negative Binomial ('negbin') or Bernoulli ('bern').}
 
-\item{dist_c}{Distribution assumed for the costs. Current available chocies are: Normal ('norm'), Gamma ('gamma') or LogNormal ('lnorm').}
+\item{dist_c}{Distribution assumed for the costs. Current available choices are: Normal ('norm'), Gamma ('gamma') or LogNormal ('lnorm').}
 
 \item{type}{Type of missingness mechanism assumed. Choices are Missing At Random (MAR) and Missing Not At Random (MNAR).}
 
-\item{prob}{A numeric vector of probabilities within the range (0,1), representing the upper and lower
+\item{prob}{A numeric vector of probabilities within the range (0, 1), representing the upper and lower
 CI sample quantiles to be calculated and returned for the imputed values.}
 
 \item{n.chains}{Number of chains.}
@@ -72,30 +72,28 @@ will generate initial values for all the model parameters.}
 
 \item{n.thin}{Thinning interval.}
 
-\item{ppc}{Logical. If \code{ppc} is \code{TRUE}, the estimates of the parameters that can be used to generate replications from the model are saved.}
-
 \item{save_model}{Logical. If \code{save_model} is \code{TRUE}, a \code{txt} file containing the model code is printed
 in the current working directory.}
 
-\item{prior}{A list containing the hyperprior values provided by the user. Each element of this list must be a vector of length two
-containing the user-provided hyperprior values and must be named with the name of the corresponding parameter. For example, the hyperprior
-values for the standard deviation effect parameters can be provided using the list \code{prior = list('sigma.prior.e' = c(0, 100))}.
-For more information about how to provide prior hypervalues for different types of parameters and models see details. 
-If \code{prior} is set to 'default', the default values will be used.}
+\item{prior}{A list containing the hyperprior values provided by the user. Each element of this list must be a vector
+containing the user-provided prior distribution and parameter values and must be named with the name of the corresponding parameter. For example, the hyperprior
+values for the standard deviation parameter for the effects can be provided using the list \code{prior = list('sigma.prior.e' = c("unif", 0, 10))}. For more information about how 
+to provide prior hypervalues for different types of parameters and models see details. If \code{prior} is set to 'default', the default values will be used.}
 
-\item{...}{Additional arguments that can be provided by the user. Examples are \code{center = TRUE} to center all the covariates in the model 
-or the additional arguments that can be provided to the function \code{\link[BCEA]{bcea}} to summarise the health economic evaluation results.}
+\item{center}{Logical. If \code{center} is \code{TRUE}, all covariates in both the effect and cost models will be centred.}
+
+\item{...}{Additional arguments that can be provided by the user. Examples are the additional arguments that can be provided to the function \code{\link[BCEA]{bcea}} to summarise the health economic evaluation results.}
 }
 \value{
 An object of the class 'missingHE' containing the following elements
 \describe{
-  \item{data_set}{A list containing the original data set provided in \code{data} (see Arguments), the number of observed and missing individuals 
-  , the total number of individuals by treatment arm and the indicator vectors for the missing values}
+  \item{data_set}{A list containing the original data set provided in \code{data} (see Arguments). Additional information is also included about, among others, 
+  the number of observed and missing individuals, the total number of individuals by treatment arm and the indicator vectors for the missing values}
   \item{model_output}{A list containing the output of a \code{JAGS} model generated from the functions \code{\link[R2jags]{jags}}, and 
-  the posterior samples for the main parameters of the model and the imputed values}
+  the posterior samples for the main parameters of the model}
   \item{cea}{A list containing the output of the economic evaluation performed using the function \code{\link[BCEA]{bcea}}}
-  \item{type}{A character variable that indicate which type of missingness mechanism has been used to run the model, 
-  either \code{MAR} or \code{MNAR} (see details)}
+  \item{type}{A character variable that indicate which type of missing value mechanism used to run the model, either \code{MAR} or \code{MNAR} (see details)}
+  \item{data_format}{A character variable that indicates which type of analysis was conducted, either using a \code{wide} or \code{long} dataset}
 }
 }
 \description{
@@ -107,35 +105,31 @@ which is implemented in the software \code{JAGS} using the function \code{\link[
 \details{
 Depending on the distributions specified for the outcome variables in the arguments \code{dist_e} and
 \code{dist_c} and the type of missingness mechanism specified in the argument \code{type}, different selection models
-are built and run in the background by the function \code{selection}. These models consist in logistic regressions that are used to estimate
-the probability of missingness in one or both the outcomes. A simple example can be used to show how selection models are specified. 
-Consider a data set comprising a response variable \eqn{y} and a set of centered covariate \eqn{X_j}. For each subject in the trial \eqn{i = 1, ..., n}
+are built and run in the background by the function \code{selection}. These models consist in logistic regressions to estimate
+the probability of missingness in one or both outcomes. A simple example can be used to show how selection models are specified. 
+Consider a data set comprising a response variable \eqn{y} and a set of covariates \eqn{X_j}, for \eqn{i = j, ..., J}. For each subject in the trial \eqn{i = 1, ..., n}
 we define an indicator variable \eqn{m_i} taking value \code{1} if the \eqn{i}-th individual is associated with a missing value and \code{0} otherwise.
 This is modelled as:
 \deqn{m_i ~ Bernoulli(\pi_i)}
-\deqn{logit(\pi_i) = \gamma_0 + \sum\gamma_j X_j + \delta(y)}
+\deqn{logit(\pi_i) = \sum\gamma_j X_j + \delta y_i}
 where
 \itemize{
-\item \eqn{\pi_i} is the individual probability of a missing value in \eqn{y}
-\item \eqn{\gamma_0} represents the marginal probability of a missing value in \eqn{y} on the logit scale.
-\item \eqn{\gamma_j} represents the impact on the probability of a missing value in \eqn{y} of the centered covariates \eqn{X_j}.
-\item \eqn{\delta} represents the impact on the probability of a missing value in \eqn{y} of the missing value itself.
+\item \eqn{\pi_i} is the individual probability of a missing value in \eqn{y}.
+\item \eqn{\gamma_j} represents the impact on the probability of a missing value in \eqn{y} of the covariate \eqn{X_j}.
+\item \eqn{\delta} represents the impact on the probability of a missing value in \eqn{y} of the outcome values.
 }
 When \eqn{\delta = 0} the model assumes a 'MAR' mechanism, while when \eqn{\delta != 0} the mechanism is 'MNAR'. For the parameters indexing the missingness model, 
-the default prior distributions assumed are the following:
+the default prior distributions assumed are:
 \itemize{
-\item \eqn{\gamma_0 ~ Logisitc(0, 1)}
 \item \eqn{\gamma_j ~ Normal(0, 0.01)}
 \item \eqn{\delta ~ Normal(0, 1)}
 }
 When user-defined hyperprior values are supplied via the argument \code{prior} in the function \code{selection}, the elements of this list (see Arguments)
-must be vectors of length two containing the user-provided hyperprior values and must take specific names according to the parameters they are associated with. 
+must be vectors containing the user-provided distribution name and hyperprior values and must take specific names according to the parameters they are associated with. 
 Specifically, the names for the parameters indexing the model which are accepted by \strong{missingHE} are the following:
 \itemize{
-\item location parameters \eqn{\alpha_0} and \eqn{\beta_0}: "mean.prior.e"(effects) and/or "mean.prior.c"(costs)
 \item auxiliary parameters \eqn{\sigma}: "sigma.prior.e"(effects) and/or "sigma.prior.c"(costs)
 \item covariate parameters \eqn{\alpha_j} and \eqn{\beta_j}: "alpha.prior"(effects) and/or "beta.prior"(costs)
-\item marginal probability of missing values \eqn{\gamma_0}: "p.prior.e"(effects) and/or "p.prior.c"(costs)
 \item covariate parameters in the missingness model \eqn{\gamma_j} (if covariate data provided): "gamma.prior.e"(effects) and/or "gamma.prior.c"(costs)
 \item mnar parameter \eqn{\delta}: "delta.prior.e"(effects) and/or "delta.prior.c"(costs)
 } 
@@ -146,8 +140,7 @@ using the arguments in the function \code{selection} (see Arguments).
 For each model, random effects can also be specified for each parameter by adding the term + (x | z) to each model formula, 
 where x is the fixed regression coefficient for which also the random effects are desired and z is the clustering variable across which 
 the random effects are specified (must be the name of a factor variable in the dataset). Multiple random effects can be specified using the 
-notation + (x1 + x2 | site) for each covariate that was included in the fixed effects formula. Random intercepts are included by default in the models
-if a random effects are specified but they can be removed by adding the term 0 within the random effects formula, e.g. + (0 + x | z).
+notation + (x1 + x2 | site) for each covariate that was included in the fixed effects formula.
 }
 \examples{
 # Quck example to run using subset of MenSS dataset
@@ -155,16 +148,16 @@ MenSS.subset <- MenSS[50:100, ]
 
 # Run the model using the selection function assuming a SCAR mechanism
 # Use only 100 iterations to run a quick check
-model.selection <- selection(data = MenSS.subset, model.eff = e ~ 1,model.cost = c ~ 1,
+model.selection <- selection(data = MenSS.subset, model.eff = e ~ trt, model.cost = c ~ trt,
    model.me = me ~ 1, model.mc = mc ~ 1, dist_e = "norm", dist_c = "norm",
-   type = "MAR", n.chains = 2, n.iter = 100, ppc = TRUE)
+   type = "MAR", n.chains = 2, n.iter = 100)
 
 # Print the results of the JAGS model
 print(model.selection)
 #
 
 # Use dic information criterion to assess model fit
-pic.dic <- pic(model.selection, criterion = "dic", module = "total")
+pic.dic <- pic(model.selection, criterion = "dic", cases = "cc")
 pic.dic
 #
 
@@ -173,8 +166,8 @@ coef(model.selection)
 #
 
 \dontshow{
-# Use waic information criterion to assess model fit
-pic.waic <- pic(model.selection, criterion = "waic", module = "total")
+# Use waic to assess model fit
+pic.waic <- pic(model.selection, criterion = "waic", cases = "cc")
 pic.waic
 }
 
@@ -184,7 +177,7 @@ diag.hist <- diagnostic(model.selection, type = "histogram", param = "mu.e")
 #
 
 # Compare observed effect data with imputations from the model
-# using plots (posteiror means and credible intervals)
+# using plots (posterior means and credible intervals)
 p1 <- plot(model.selection, class = "scatter", outcome = "effects")
 #
 
@@ -193,22 +186,22 @@ summary(model.selection)
 
 \donttest{
 # Further examples which take longer to run
-model.selection <- selection(data = MenSS, model.eff = e ~ u.0,model.cost = c ~ e,
-   model.se = me ~ u.0, model.mc = mc ~ 1, dist_e = "norm", dist_c = "norm",
-   type = "MAR", n.chains = 2, n.iter = 500, ppc = FALSE)
+model.selection <- selection(data = MenSS, model.eff = e ~ trt, model.cost = c ~ trt + e,
+   model.se = me ~ age, model.mc = mc ~ age, dist_e = "norm", dist_c = "norm",
+   type = "MAR", n.chains = 2, n.iter = 500)
 #
 # Print results for all imputed values
-print(model.selection, value.mis = TRUE)
+print(model.selection)
 
 # Use looic to assess model fit
-pic.looic<-pic(model.selection, criterion = "looic", module = "total")
+pic.looic <- pic(model.selection, criterion = "looic", cases = "cc")
 pic.looic
 
-# Show density plots for all parameters
-diag.hist <- diagnostic(model.selection, type = "denplot", param = "all")
+# Show density plots for mean costs parameters
+diag.den <- diagnostic(model.selection, type = "denplot", param = "mu.c")
 
 # Plots of imputations for all data
-p1 <- plot(model.selection, class = "scatter", outcome = "all")
+p1 <- plot(model.selection, class = "scatter", outcome = "both")
 
 # Summarise the CEA results
 summary(model.selection)

@@ -14,28 +14,28 @@ CI sample quantiles to be calculated and returned for the estimates.}
 
 \item{random}{Logical. If \code{random} is \code{TRUE}, the estimates of the random effects parameters are printed, when available.}
 
-\item{digits}{Number of digits to be displayed for each estimate.}
+\item{digits}{Integer indicating the number of decimal places to be used for rounding (default = 3).}
 
 \item{...}{Additional arguments affecting the summary produced.}
 }
 \value{
 Prints a table with some summary statistics, including posterior mean, standard deviation and lower and upper quantiles based on the
 values specified in \code{prob}, for the posterior distributions of the regression coefficients of the effects and costs models run using the 
-function \code{selection}, \code{pattern} or \code{hurdle}.
+function \code{selection}, \code{pattern}, \code{hurdle} or \code{\link{lmdm}}.
 }
 \description{
 Produces a table printout with summary statistics for the regression coefficients of the health economic evaluation probabilistic model
-run using the function \code{\link{selection}}, \code{\link{pattern}} or \code{\link{hurdle}}.
+run using the function \code{\link{selection}}, \code{\link{pattern}},  \code{\link{hurdle}} or \code{\link{lmdm}}.
 }
 \examples{
  
-# For examples see the function \code{\link{selection}}, 
-# \code{\link{pattern}} or \code{\link{hurdle}}
+# For examples see the function \code{\link{selection}}, \code{\link{pattern}}, 
+# \code{\link{hurdle}} or \code{\link{lmdm}}
 # 
 # 
 }
 \seealso{
-\code{\link{selection}} \code{\link{pattern}} \code{\link{hurdle}} \code{\link{diagnostic}} \code{\link{plot.missingHE}}
+\code{\link{selection}} \code{\link{pattern}} \code{\link{hurdle}} \code{\link{lmdm}} \code{\link{diagnostic}} \code{\link{plot.missingHE}}
 }
 \author{
 Andrea Gabrio

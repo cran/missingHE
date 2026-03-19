@@ -2,17 +2,17 @@
 % Please edit documentation in R/diagnostic.R
 \name{diagnostic}
 \alias{diagnostic}
-\title{Diagnostic checks for assessing MCMC convergence of Bayesian models fitted in \code{JAGS} using the function \code{\link{selection}}, \code{\link{pattern}} or \code{\link{hurdle}}}
+\title{Diagnostic checks for assessing MCMC convergence of Bayesian models fitted in \code{JAGS} using the function \code{\link{selection}}, \code{\link{pattern}}, \code{\link{hurdle}} or \code{\link{lmdm}}.}
 \usage{
 diagnostic(x, type = "denplot", param = "all", theme = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class "missingHE" containing the posterior results of a full Bayesian model implemented using the function \code{\link{selection}}, 
-\code{\link{pattern}} or \code{\link{hurdle}}.}
+\code{\link{pattern}}, \code{\link{hurdle}} or \code{\link{lmdm}}.}
 
 \item{type}{Type of diagnostic check to be plotted for the model parameter selected. Available choices include: 'histogram' for histogram plots,
 'denplot' for density plots, 'traceplot' for trace plots, 'acf' for autocorrelation plots, 'running' for running mean plots,
-'compare' for comparing the distribution of the whole chain with only its last part, 'cross' for crosscorrelation plots, 'Rhat' for the potential scale reduction factor, 'geweke' for the geweke diagnostic,
+'compare' for comparing the distribution of the whole chain with only its last part, 'cross' for cross correlation plots, 'Rhat' for the potential scale reduction factor, 'geweke' for the geweke diagnostic,
 'pairs' for posterior correlation among the parameters,'caterpillar' for caterpillar plots.}
 
 \item{param}{Name of the family of parameters to process, as given by a regular expression. For example the mean parameters 
@@ -20,7 +20,7 @@ for the effect and cost variables can be specified using 'mu.e' and 'mu.c', resp
 models may have different parameters depending on the assumed distributions and missing data assumptions. 
 To see a complete list of all possible parameters by types of models assumed see details.}
 
-\item{theme}{Type of ggplot theme among some pre-defined themes. For a full list of available themes see details.}
+\item{theme}{Type of ggplot theme among some pre-defined themes, mostly taken from the package \strong{ggthemes}. For a full list of available themes see details.}
 
 \item{...}{Additional parameters that can be provided to manage the graphical output of \code{diagnostic}.}
 }
@@ -28,8 +28,8 @@ To see a complete list of all possible parameters by types of models assumed see
 A \strong{ggplot} object containing the plots specified in the argument \code{type}
 }
 \description{
-The focus is restricted to full Bayesian models in cost-effectiveness analyses based on the function \code{\link{selection}}, \code{\link{pattern}} and \code{\link{hurdle}}, 
-with convergence of the MCMC chains that is assessed through graphical checks of the posterior distribution of the parameters of interest,
+The focus is restricted to full Bayesian models in cost-effectiveness analyses based on the function \code{\link{selection}}, \code{\link{pattern}}, 
+\code{\link{hurdle}} and \code{\link{lmdm}}, with convergence of the MCMC chains that is assessed through graphical checks of the posterior distribution of the parameters of interest,
 Examples are density plots, trace plots, autocorrelation plots, etc. Other types of posterior checks are related to some summary MCMC statistics 
 that are able to detect possible issues in the convergence of the algorithm, such as the potential scale reduction factor or the effective sample size.
 Different types of diagnostic tools and statistics are used to assess model convergence using functions contained in the package \strong{ggmcmc}. 
@@ -43,42 +43,35 @@ For a full list of the available plots see the description of the argument \code
 The parameters that can be assessed through \code{diagnostic} are only those included in the object \code{x} (see Arguments). Specific character names
 must be specified in the argument \code{param} according to the specific model implemented. The available names and the parameters associated with them are:
 \itemize{
-\item "mu.e" the mean parameters of the effect variables in the two treatment arms.
-\item "mu.c" the mean parameters of the cost variables in the two treatment arms.
-\item "mu.e.p" the pattern-specific mean parameters of the effect variables in the two treatment arms (only with the function \code{pattern}).
-\item "mu.c.p" the pattern-specific mean parameters of the cost variables in the two treatment arms (only with the function \code{pattern}).
-\item "sd.e" the standard deviation parameters of the effect variables in the two treatment arms.
-\item "sd.c" the standard deviation parameters of the cost variables in the two treatment arms.
-\item "alpha" the regression intercept and covariate coefficient parameters for the effect variables in the two treatment arms.
-\item "beta" the regression intercept and covariate coefficient parameters for the cost variables in the two treatment arms.
-\item "random.alpha" the regression random effects intercept and covariate coefficient parameters for the effect variables in the two treatment arms.
-\item "random.beta" the regression random effects intercept and covariate coefficient parameters for the cost variables in the two treatment arms.
-\item "p.e" the probability parameters of the missingness or structural values mechanism for the effect variables in the two treatment arms 
-(only with the function \code{selection} or \code{hurdle}).
-\item "p.c" the probability parameters of the missingness or structural values mechanism for the cost variables in the two treatment arms 
-(only with the function \code{selection} or \code{hurdle}).
-\item "gamma.e" the regression intercept and covariate coefficient parameters of the missingness or structural values mechanism
- for the effect variables in the two treatment arms (only with the function \code{selection} or \code{hurdle}).
-\item "gamma.c" the regression intercept and covariate coefficient parameters of the missingness or structural values mechanism 
- for the cost variables in the two treatment arms (only with the function \code{selection} or \code{hurdle}).
-\item "random.gamma.e" the random effects regression intercept and covariate coefficient parameters of the missingness or structural values mechanism
- for the effect variables in the two treatment arms (only with the function \code{selection} or \code{hurdle}).
-\item "random.gamma.c" the random effects regression intercept and covariate coefficient parameters of the missingness or structural values mechanism 
- for the cost variables in the two treatment arms (only with the function \code{selection} or \code{hurdle}).
-\item "pattern" the probabilities associated with the missingness patterns in the data (only with the function \code{pattern}).
-\item "delta.e" the mnar parameters of the missingness mechanism for the effect variables in the two treatment arms 
-(only with the function \code{selection} or \code{pattern}).
-\item "delta.c" the mnar parameters of the missingness mechanism for the cost variables in the two treatment arms 
-(only with the function \code{selection} or \code{pattern}).
-\item "random.delta.e" the random effects mnar parameters of the missingness mechanism for the effect variables in the two treatment arms 
-(only with the function \code{selection}).
-\item "random.delta.c" the random effects mnar parameters of the missingness mechanism for the cost variables in the two treatment arms 
-(only with the function \code{selection}).
-\item "all" all available parameters stored in the object \code{x}.
+\item "mu.e" the mean of the effects across treatment arms.
+\item "mu.c" the mean of the costs across treatment arms.
+\item "sd.e" the standard deviation of the effects.
+\item "sd.c" the standard deviation of the costs.
+\item "alpha" the regression coefficients for the effects.
+\item "beta" the regression coefficients for the costs.
+\item "beta.f" the regression coefficients for the costs related to the effects predictor.
+\item "alpha.time" the autoregressive coefficients for the effects (only with the function \code{lmdm}).
+\item "beta.time" the autoregressive coefficients for the costs (only with the function \code{lmdm}).
+\item "random.alpha" the regression random effects coefficients for the effects.
+\item "random.beta" the regression random effects coefficients for the costs.
+\item "random.alpha.time" the autoregressive random effects coefficients for the effects (only with the function \code{lmdm}).
+\item "random.beta.time" the autoregressive random effects coefficients for the costs (only with the function \code{lmdm}).
+\item "p.e" the probability of missingness or structural values for the effects (only with the function \code{selection}, \code{hurdle} or \code{lmdm}).
+\item "p.c" the probability of missingness or structural values for the costs (only with the function \code{selection}, \code{hurdle} or \code{lmdm}).
+\item "gamma.e" the regression coefficients of missingness or structural values for the effects (only with the function \code{selection}, \code{hurdle}).
+\item "gamma.c" the regression coefficientd of missingness or structural values for the costs (only with the function \code{selection}, \code{hurdle}).
+\item "random.gamma.e" the random effects regression coefficients of missingness or structural values for the effects (only with the function \code{selection}, \code{hurdle} or \code{lmdm}).
+\item "random.gamma.c" the random effects regression coefficients of missingness or structural values for the costs (only with the function \code{selection}, \code{hurdle} or \code{lmdm}).
+\item "pattern" the probabilities of the missingness patterns (only with the function \code{pattern}).
+\item "delta.e" the mnar parameter for the effects (only with the function \code{selection}, \code{pattern} or \code{lmdm}).
+\item "delta.c" the mnar parameters for the costs (only with the function \code{selection}, \code{pattern} or \code{lmdm}).
+\item "random.delta.e" the random effects mnar parameters for the effects (only with the function \code{selection} or \code{lmdm}).
+\item "random.delta.c" the random effects mnar parameters for the costs (only with the function \code{selection} or \code{lmdm}).
+\item "all" all available parameters stored in \code{x}.
 }
 When the object \code{x} is created using the function \code{pattern}, pattern-specific standard deviation ("sd.e", "sd.c") and regression coefficient 
 parameters ("alpha", "beta") for both outcomes can be visualised. The parameters associated with a missingness mechanism can be accessed only when \code{x}
-is created using the function \code{selection} or \code{pattern}, while the parameters associated with the model for the structural values mechanism
+is created using the function \code{selection}, \code{pattern} or \code{lmdm}, while the parameters associated with the model for the structural values mechanism
 can be accessed only when \code{x} is created using the function \code{hurdle}.
 
 The argument \code{theme} allows to customise the graphical output of the plots generated by \code{diagnostic} and
@@ -86,7 +79,8 @@ allows to choose among a set of possible pre-defined themes taken form the packa
 for each theme, see \strong{ggthemes}.
 }
 \examples{
-#For examples see the function selection, pattern or hurdle
+# For examples see the function \code{\link{selection}}, \code{\link{pattern}}, 
+# \code{\link{hurdle}} or \code{\link{lmdm}}
 #
 #
 }
@@ -96,7 +90,7 @@ Gelman, A. Carlin, JB., Stern, HS. Rubin, DB.(2003). \emph{Bayesian Data Analysi
 Brooks, S. Gelman, A. Jones, JL. Meng, XL. (2011). \emph{Handbook of Markov Chain Monte Carlo}, CRC/Chapman and Hall.
 }
 \seealso{
-\code{\link[ggmcmc]{ggs}} \code{\link{selection}} \code{\link{selection}} \code{\link{hurdle}}.
+\code{\link[ggmcmc]{ggs}} \code{\link{selection}} \code{\link{pattern}} \code{\link{hurdle}} \code{\link{lmdm}}.
 }
 \author{
 Andrea Gabrio
