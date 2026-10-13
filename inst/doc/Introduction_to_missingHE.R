@@ -49,22 +49,21 @@ hist_c
 
 ## ----sel1, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 sm1_mar <- selection(data = MenSS, dist_e = "norm", dist_c = "norm",
-             model.eff = e ~ trt + u.0, model.cost = c ~ trt + e,
-             model.me = me ~ u.0, model.mc = mc ~ 1, 
-             type = "MAR", n.iter = 1000, ref = 2)
+         model.eff = e ~ trt + u.0, model.cost = c ~ trt + e,
+         model.me = me ~ u.0, model.mc = mc ~ 1, 
+         type = "MAR", n.iter = 1000, ref = 2)
 
 ## ----pat1, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pm1_mar <- pattern(data = MenSS, dist_e = "logis", dist_c = "norm", 
-                   model.eff = e ~ trt + u.0, model.cost = c ~ trt + e, 
-                   type = "MAR", restriction = "CC", 
-                   n.iter = 1000, ref = 2)
+         model.eff = e ~ trt + u.0, model.cost = c ~ trt + e, 
+         type = "MAR", restriction = "CC", n.iter = 1000, ref = 2)
 
 ## ----hur1, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 hm1_mar <- hurdle(data = MenSS, dist_e = "beta", dist_c = "gamma", 
-                  model.eff = e ~ trt + u.0, model.cost = c ~ trt + e, 
-                  model.se = se ~ 1, model.sc = sc ~ 1, 
-                  se = 1, sc = 0, type = "SCAR", 
-                  n.iter = 1000, ref = 2)
+         model.eff = e ~ trt + u.0, model.cost = c ~ trt + e, 
+         model.se = se ~ 1, model.sc = sc ~ 1, 
+         se = 1, sc = 0, type = "SCAR", 
+         n.iter = 1000, ref = 2)
 
 ## ----diag1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, error=FALSE, tidy=TRUE-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # diagnostic(x = sm1_mar, type = "traceplot", param = "sd.e")
@@ -75,7 +74,7 @@ diagnostic(x = sm1_mar, type = "traceplot", param = "sd.e")
 ## ----ppc1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, error=FALSE, tidy=TRUE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ppc(x = sm1_mar, type = "dens_overlay", outcome = "effects", ndisplay = 20)
 
-## ----fig3, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Posterior predictive graphical checks using the ppc function for a model fitted in missingHE, for example through inspection of the overlayed densities.", out.width='100%', fig.pos='h', out.extra=''----
+## ----fig3, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Posterior predictive graphical checks using the ppc function for a model fitted in missingHE, for example through inspection of overlayed densities.", out.width='100%', fig.pos='h', out.extra=''----
 ppc(x = sm1_mar, type = "dens_overlay", outcome = "effects", ndisplay = 20)
 
 ## ----pic1, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -97,11 +96,17 @@ names(sm1_mar)
 options(width = 100)
 names(sm1_mar$model_output$`model`)
 
+## ----postsum, echo=TRUE, eval=FALSE, tidy=TRUE----------------------------------------------------
+# postsum(sm1_mar)
+
+## ----postsumshow, echo=FALSE, eval=TRUE, tidy=TRUE------------------------------------------------
+postsum(sm1_mar)
+
 ## ----print, echo=TRUE, eval=FALSE, tidy=TRUE------------------------------------------------------
 # print(sm1_mar)
 
-## ----printshow, echo=FALSE, eval=TRUE, tidy=TRUE--------------------------------------------------
-print(sm1_mar)
+## ----printshow, echo=TRUE, eval=FALSE, tidy=TRUE--------------------------------------------------
+# print(sm1_mar)
 
 ## ----coef, echo=TRUE, eval=FALSE, tidy=TRUE-------------------------------------------------------
 # coef(sm1_mar)
@@ -110,7 +115,7 @@ print(sm1_mar)
 coef(sm1_mar)
 
 ## ----plot1, echo=TRUE, eval=FALSE, tidy=TRUE, error=FALSE, warning=FALSE--------------------------
-# plot(sm1_mar, class = "scatter", outcome = "effects")
+# plot(sm1_mar, class = "scatter", outcome = "effects", trt = "MenSS")
 
 ## ----figplot, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Scatter plots of observed and imputed effectiveness data in the MenSS arm under normal distributions using a selection model.", out.width='100%', fig.pos='h', out.extra=''----
 plot(sm1_mar, class = "scatter", outcome = "effects", trt = "MenSS")

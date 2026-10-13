@@ -55,14 +55,14 @@ hist_c
 
 ## ----lmdm1, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 lmdm1_mar <- lmdm(data = PBS, dist_e = "norm", dist_c = "norm",
-             model.eff = e ~ trt, model.cost = c ~ trt + e,
-             model.me = me ~ 1, model.mc = mc ~ 1, time_dep = "biv",
-             type = "MAR", n.iter = 1000, ref = 2)
+           model.eff = e ~ trt, model.cost = c ~ trt + e,
+           model.me = me ~ 1, model.mc = mc ~ 1, time_dep = "biv",
+           type = "MAR", n.iter = 1000, ref = 2)
 
 ## ----diag1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, error=FALSE, tidy=TRUE-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # diagnostic(x = lmdm1_mar, type = "denplot", param = "beta.f")
 
-## ----fig2, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Checking convergence using the diagnostic function for a model fitted in missingHE, for example through inspection of the density plots.", out.width='100%', fig.pos='h', out.extra=''---------
+## ----fig2, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Checking convergence using the diagnostic function for a model fitted in missingHE, for example through inspection of density plots.", out.width='100%', fig.pos='h', out.extra=''-------------
 diagnostic(x = lmdm1_mar, type = "denplot", param = "beta.f")
 
 ## ----ppc1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -81,10 +81,10 @@ pic_lmdm1_mar$looic
 
 ## ----pic2, echo=TRUE, eval=FALSE, message=FALSE, error=FALSE, warning=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # pic_compare_mar <- pic(x = list(lmdm1_mar, lmdm2_mar),
-#                        criterion = "looic", cases = "cc")
+#                  criterion = "looic", cases = "cc")
 
 ## ----print, echo=TRUE, eval=FALSE, tidy=TRUE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# print(lmdm1_mar, display = "fixed")
+# postsum(lmdm1_mar, display = "fixed")
 
 ## ----printshow, echo=FALSE, eval=TRUE, tidy=TRUE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 print(lmdm1_mar, display = "fixed")
@@ -110,13 +110,13 @@ plot(lmdm1_mar, class = "boxplot", outcome = "costs",
 # BCEA::ceplane.plot(lmdm1_mar$cea, graph = "ggplot2")
 # BCEA::ceac.plot(lmdm1_mar$cea, graph = "ggplot2")
 
-## ----figplotcea1, echo=FALSE, eval=TRUE, tidy=FALSE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example in terms of cost-effectiveness plane.",out.width='100%', fig.pos='h', out.extra=''------------
+## ----figplotcea1, echo=FALSE, eval=TRUE, tidy=FALSE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example using the cost-effectiveness plane.",out.width='100%', fig.pos='h', out.extra=''--------------
 cep_sm1_mar <- BCEA::ceplane.plot(lmdm1_mar$cea, 
             graph = "ggplot2") + ggplot2::ggtitle("")
 ceac_sm1_mar <- BCEA::ceac.plot(lmdm1_mar$cea, 
             graph = "ggplot2") + ggplot2::ggtitle("")
 cep_sm1_mar
 
-## ----figplotcea2, echo=FALSE, eval=TRUE, tidy=FALSE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example in terms of cost-effectiveness acceptability curve.",out.width='100%', fig.pos='h', out.extra=''----
+## ----figplotcea2, echo=FALSE, eval=TRUE, tidy=FALSE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example using the cost-effectiveness acceptability curve.",out.width='100%', fig.pos='h', out.extra=''----
 ceac_sm1_mar
 
