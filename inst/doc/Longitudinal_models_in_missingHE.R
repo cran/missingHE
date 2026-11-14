@@ -1,14 +1,23 @@
-## ----echo = FALSE, message = FALSE------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-knitr::opts_chunk$set(prompt = TRUE, highlight = F, background = '#FFFFFF',
-                      collapse = T, comment = "#>")
+## ----setup, include=FALSE---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+has_jags <- isTRUE(tryCatch({ loadNamespace("rjags"); TRUE }, error = function(e) FALSE))
+
+knitr::opts_chunk$set(
+  eval = has_jags,
+  prompt = TRUE,
+  highlight = FALSE,
+  background = '#FFFFFF',
+  collapse = TRUE,
+  comment = "#>"
+)
+
 library(missingHE)
 library(bookdown)
 library(ggplot2)
 
 options(width = 300)
-set.seed(1234)
+set.seed(1014)
 
-## ----pbs, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----pbs, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 n_long <- nrow(PBS)
 n <- nrow(PBS[PBS$time == 1, ])
 n1 <- nrow(PBS[PBS$trt=="1" & PBS$time == 1,])
@@ -41,82 +50,82 @@ axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.
 hist_c <- ggplot(PBS_outcomes, aes(x=c, fill=trt)) + geom_histogram(color="black", binwidth = 2000) + facet_wrap(~trt+time) + scale_fill_manual(values=c("grey","grey")) + scale_y_continuous(expand = expansion(mult = c(0, 0.05))) + theme(panel.grid.major = element_blank(), legend.key = element_rect(fill = "white"), panel.grid.minor = element_blank(), panel.background = element_blank(), legend.position="none",
 axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5))+ ylab("Frequency") + xlab("costs") + scale_x_continuous(breaks=seq(0,40000,40000))
 
-## ----tbl1-hide, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, error=FALSE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----tbl1-hide, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # rbind(head(PBS), tail(PBS))
 
-## ----tbl1, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----tbl1, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 print(rbind(head(PBS), tail(PBS)), row.names = FALSE)
 
-## ----fig1e, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Histograms of the observed data distributions for the utilities in the TAU and PBS arm by time point.", out.width='100%', fig.pos='h', out.extra=''-------------------------------------------
+## ----fig1e, echo=FALSE, eval=TRUE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Histograms of the observed data distributions for the utilities in the TAU and PBS arm by time point.", out.width='100%'----------------------------------------------------------------------------------------------
 hist_e
 
-## ----fig1c, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Histograms of the observed data distributions for the costs in the TAU and PBS arm by time point.", out.width='100%', fig.pos='h', out.extra=''-----------------------------------------------
+## ----fig1c, echo=FALSE, eval=TRUE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Histograms of the observed data distributions for the costs in the TAU and PBS arm by time point.", out.width='100%'--------------------------------------------------------------------------------------------------
 hist_c
 
-## ----lmdm1, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----lmdm1, echo=TRUE, message=FALSE, warning=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 lmdm1_mar <- lmdm(data = PBS, dist_e = "norm", dist_c = "norm",
            model.eff = e ~ trt, model.cost = c ~ trt + e,
            model.me = me ~ 1, model.mc = mc ~ 1, time_dep = "biv",
            type = "MAR", n.iter = 1000, ref = 2)
 
-## ----diag1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, error=FALSE, tidy=TRUE-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----diag1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # diagnostic(x = lmdm1_mar, type = "denplot", param = "beta.f")
 
-## ----fig2, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Checking convergence using the diagnostic function for a model fitted in missingHE, for example through inspection of density plots.", out.width='100%', fig.pos='h', out.extra=''-------------
+## ----fig2, echo=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Checking convergence using the diagnostic function for a model fitted in missingHE, for example through inspection of density plots.", out.width='100%'---------------------------------------------------------------------------
 diagnostic(x = lmdm1_mar, type = "denplot", param = "beta.f")
 
-## ----ppc1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----ppc1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, results='hide'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ppc(x = lmdm1_mar, type = "histogram", outcome = "effects",
 #     ndisplay = 2, time.plot = 3, trt = "2")
 
-## ----fig3, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Posterior predictive graphical checks using the ppc function for a model fitted in missingHE, for example through inspection of histograms.", out.width='100%', fig.pos='h', out.extra=''------
+## ----fig3, echo=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Posterior predictive graphical checks using the ppc function for a model fitted in missingHE, for example through inspection of histograms.", out.width='100%'--------------------------------------------------------------------
 ppc(x = lmdm1_mar, type = "histogram", outcome = "effects", 
     ndisplay = 2, time.plot = 3, trt = "2")
 
-## ----pic1, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, error=FALSE, results='hide'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----pic1, echo=TRUE, message=FALSE, warning=FALSE, results='hide'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pic_lmdm1_mar <- pic(x = lmdm1_mar, criterion = "looic", cases = "cc")
 
-## ----pic1show, echo=TRUE, eval=TRUE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----pic1show, echo=TRUE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pic_lmdm1_mar$looic
 
-## ----pic2, echo=TRUE, eval=FALSE, message=FALSE, error=FALSE, warning=FALSE, results='hide'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----pic2, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, results='hide'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # pic_compare_mar <- pic(x = list(lmdm1_mar, lmdm2_mar),
 #                  criterion = "looic", cases = "cc")
 
-## ----print, echo=TRUE, eval=FALSE, tidy=TRUE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----print, echo=TRUE, eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # postsum(lmdm1_mar, display = "fixed")
 
-## ----printshow, echo=FALSE, eval=TRUE, tidy=TRUE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----printshow, echo=FALSE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 print(lmdm1_mar, display = "fixed")
 
-## ----coef, echo=TRUE, eval=FALSE, tidy=TRUE---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----coef, echo=TRUE, eval=FALSE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # coef(lmdm1_mar)
 
-## ----coefshow, echo=FALSE, eval=TRUE, tidy=TRUE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----coefshow, echo=FALSE---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 coef(lmdm1_mar)
 
-## ----plot1, echo=TRUE, eval=FALSE, tidy=TRUE, error=FALSE, warning=FALSE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----plot1, echo=TRUE, eval=FALSE, warning=FALSE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # plot(lmdm1_mar, class = "boxplot", outcome = "costs",
 #      trt = "1", time.plot = 2)
 
-## ----figplot, echo=FALSE, eval=TRUE, tidy=TRUE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Boxplots of observed and imputed effectiveness data in the TAU arm at time 2 under normal distributions using a longitudinal model.", out.width='100%', fig.pos='h', out.extra=''-----------
+## ----figplot, echo=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Boxplots of observed and imputed effectiveness data in the TAU arm at time 2 under normal distributions using a longitudinal model.", out.width='100%'-------------------------------------------------------------------------
 plot(lmdm1_mar, class = "boxplot", outcome = "costs", 
      trt = "1", time.plot = 2)
 
-## ----summary, echo=TRUE, eval=FALSE, tidy=TRUE------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----summary, echo=TRUE, eval=FALSE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # summary(lmdm1_mar, incremental = TRUE)
 
-## ----bcea, echo=TRUE, eval=FALSE, tidy=TRUE---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----bcea, echo=TRUE, eval=FALSE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # BCEA::ceplane.plot(lmdm1_mar$cea, graph = "ggplot2")
 # BCEA::ceac.plot(lmdm1_mar$cea, graph = "ggplot2")
 
-## ----figplotcea1, echo=FALSE, eval=TRUE, tidy=FALSE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example using the cost-effectiveness plane.",out.width='100%', fig.pos='h', out.extra=''--------------
+## ----figplotcea1, echo=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example using the cost-effectiveness plane.",out.width='100%'-----------------------------------------------------------------------------
 cep_sm1_mar <- BCEA::ceplane.plot(lmdm1_mar$cea, 
             graph = "ggplot2") + ggplot2::ggtitle("")
 ceac_sm1_mar <- BCEA::ceac.plot(lmdm1_mar$cea, 
             graph = "ggplot2") + ggplot2::ggtitle("")
 cep_sm1_mar
 
-## ----figplotcea2, echo=FALSE, eval=TRUE, tidy=FALSE, error=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example using the cost-effectiveness acceptability curve.",out.width='100%', fig.pos='h', out.extra=''----
+## ----figplotcea2, echo=FALSE, warning=FALSE, dpi=300, fig.show='hold',fig.cap="Inspecting probabilistic sensitivity analysis using BCEA built-in functions, for example using the cost-effectiveness acceptability curve.",out.width='100%'---------------------------------------------------------------
 ceac_sm1_mar
 
